@@ -1,7 +1,12 @@
 ## Setup
 
 You will need: Python 3, node, and PostgreSQL.<br>
-You can install the dependencies for the project with a simple `npm install`.
+
+You can install the dependencies for the project with a simple `npm install` once you have python
+and node setup.
+
+You can configure a connection to your running instance of PostgreSQL using the `DATABASES` variable
+in the `sartoria/settings.py` file.
 
 ### `npm start`
 
