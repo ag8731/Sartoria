@@ -1,7 +1,6 @@
 {
   "name": "sartoria",
   "version": "0.1.0",
-  "private": true,
   "dependencies": {
     "axios": "^0.18.0",
     "react": "^16.8.6",
@@ -12,7 +11,8 @@
     "start": "react-app-rewired start",
     "build": "react-app-rewired build",
     "test": "react-app-rewired test",
-    "eject": "react-scripts eject"
+    "api": "pipenv run python manage.py runserver",
+    "postinstall": "pipenv install"
   },
   "eslintConfig": {
     "extends": "react-app"
