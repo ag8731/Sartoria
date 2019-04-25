@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'webpack_loader',
     'rest_framework',
+    'dynamic_rest',
     'api',
 ]
 
@@ -72,6 +73,12 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'sartoria.wsgi.application'
 
+# REST_FRAMEWORK = {
+#     'DEFAULT_RENDERER_CLASSES': [
+#         'rest_framework.renderers.JSONRenderer',
+#         'dynamic_rest.renderers.DynamicBrowsableAPIRenderer',
+#     ],
+# }
 
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
