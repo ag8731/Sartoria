@@ -3,6 +3,10 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
+import {getAuthToken} from './utils/auth';
+import axios from 'axios';
+
+axios.defaults.headers.common['Authorization'] = `Token ${getAuthToken()}`;
 
 ReactDOM.render(<App />, document.getElementById('root'));
 
