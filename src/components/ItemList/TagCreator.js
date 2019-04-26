@@ -15,7 +15,7 @@ class TagCreator extends Component {
     const {actions} = this.props;
 
 		if (name.length === 0) {
-			message.error('Tags must have names!');
+			message.error('Tags must have names.');
 			return;
 		}
 

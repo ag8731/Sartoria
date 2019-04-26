@@ -44,7 +44,7 @@ class ItemCreator extends Component {
     const {actions} = this.props;
 
 		if (name.length === 0 || image == null || bin == null) {
-			message.error('All fields required!');
+			message.error('All fields required.');
 			return;
 		}
 
