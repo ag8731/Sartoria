@@ -1,33 +1,88 @@
-.App {
-  text-align: center;
+#root, .App {
+    background: #ffffff;
+    min-height: 100% !important;
+    min-width: 100% !important;
+    overflow-x: hidden;
+}
+
+.main {
+    padding: 20px;
 }
 
 .App-logo {
-  animation: App-logo-spin infinite 20s linear;
-  height: 40vmin;
-  pointer-events: none;
+    height: 32px;
+    background: #333;
+    border-radius: 6px;
+    margin: 16px;
 }
 
 .App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+    background-color: black;
+    height: 60px;
+    padding: 20px;
+    color: white;
 }
 
-.App-link {
-  color: #61dafb;
+.App-intro {
+    font-size: large;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.section-header {
+    margin-bottom: 16px;
+}
+
+.section-header .title{
+    font-size: 24px;
+}
+
+.item-grid {
+    display: flex;
+    flex-flow: row wrap;
+    align-items: center;
+    justify-content: space-around;
+}
+
+.item {
+    cursor: default;
+    width: 300px;
+}
+
+.item .label,
+.creator-actions .cancel {
+    margin-right: 8px;
+}
+
+.item .sub,
+.creator-field,
+.creator-actions {
+    margin-top: 8px;
+}
+
+.creator-select {
+    width: 100%;
+}
+
+.creator-tag-select {
+    width: 78%;
+    margin-right: 2%;
+}
+
+.creator-tag-add {
+    width: 20%;
+}
+
+.creator-actions {
+    float: right;
+}
+
+.ant-popover-inner-content {
+    overflow: auto;
+}
+
+.ant-table-footer {
+    background: #ffffff !important
+}
+
+.ant-list-item-meta-description {
+    color: rgba(0, 0, 0, 0.65) !important
 }

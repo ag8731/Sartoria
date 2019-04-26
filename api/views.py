@@ -1,24 +1,24 @@
 from api.models import Bin, Item, Tag
 from api.serializers import BinSerializer, ItemSerializer, TagSerializer, UserSerializer
 from django.contrib.auth.models import User
-from dynamic_rest.viewsets import DynamicModelViewSet
+from rest_framework.viewsets import ModelViewSet
 
 
-class UserViewSet(DynamicModelViewSet):
+class UserViewSet(ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
 
-class BinViewSet(DynamicModelViewSet):
+class BinViewSet(ModelViewSet):
     queryset = Bin.objects.all()
     serializer_class = BinSerializer
 
 
-class TagViewSet(DynamicModelViewSet):
+class TagViewSet(ModelViewSet):
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
 
 
-class ItemViewSet(DynamicModelViewSet):
+class ItemViewSet(ModelViewSet):
     queryset = Item.objects.all()
     serializer_class = ItemSerializer

@@ -22,4 +22,5 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-/uploaded_image_data
+# user uploaded data
+/media

@@ -1,30 +1,53 @@
 import React, {Component} from 'react';
+import ItemList from './components/ItemList';
 import './App.css';
 import {hot} from 'react-hot-loader/root';
-import axios from 'axios';
+import {BrowserRouter as Router, Route, Link, withRouter} from 'react-router-dom';
+import {Layout, Menu, Icon} from 'antd';
+const {Content, Sider} = Layout;
+const {Item} = Menu;
+
+const RoutedMenu = withRouter(props => {
+  const {location} = props;
+  return (
+    <Menu theme='dark' selectedKeys={[location.pathname]} mode='inline'>
+      <Item key='/bins'>
+        <Icon type='appstore-o' />
+        <span>Bins</span>
+        <Link to='/bins' />
+      </Item>
+      <Item key='/items'>
+        <Icon type='tool' />
+        <span>Items</span>
+        <Link to='/items' />
+      </Item>
+    </Menu>
+  )
+});
 
 class App extends Component {
   state = {
-    test: 'No Response'
-  }
-
-  getSomething = () => {
-    axios.get('/api/users').then(res => {
-      this.setState({ test: JSON.stringify(res.data) })
-    })
+    collapsed: false
   }
 
 	render() {
-    const {test} = this.state;
-
-		return (<div className="App">
-			<header className="App-header">
-				<h1 className="App-title">Sartoria</h1>
-			</header>
-			<p className="App-intro" onClick={this.getSomething}>
-        {test}
-			</p>
-		</div>);
+		return (
+      <Router>
+    		<div className='App'>
+    				<Layout style={{ minHeight: '100vh' }}>
+    					<Sider collapsible collapsed={this.state.collapsed} onCollapse={(collapsed) => this.setState({ collapsed })}>
+    						<div className='App-logo'></div>
+                <RoutedMenu />
+    					</Sider>
+    					<Content style={{ padding: 24 }}>
+                <Route path='/' exact={true} component={() => <div>{'test'}</div>} />
+                <Route path='/bins' exact={true} component={() => <div>{'bins'}</div>} />
+                <Route path='/items' exact={true} component={ItemList} />
+    					</Content>
+    				</Layout>
+    		</div>
+      </Router>
+		);
 	}
 }
 

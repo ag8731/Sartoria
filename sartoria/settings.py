@@ -39,7 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'webpack_loader',
     'rest_framework',
-    'dynamic_rest',
+    'django_filters',
     'api',
 ]
 
@@ -72,13 +72,6 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'sartoria.wsgi.application'
-
-# REST_FRAMEWORK = {
-#     'DEFAULT_RENDERER_CLASSES': [
-#         'rest_framework.renderers.JSONRenderer',
-#         'dynamic_rest.renderers.DynamicBrowsableAPIRenderer',
-#     ],
-# }
 
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
@@ -135,7 +128,7 @@ STATIC_URL = '/static/'
 
 STATICFILES_DIRS = [
     # So Django knows about webpack files
-    os.path.join(BASE_DIR, 'build', 'static'),
+    os.path.join(BASE_DIR, 'build', 'static')
 ]
 
 WEBPACK_LOADER = {
@@ -144,4 +137,11 @@ WEBPACK_LOADER = {
         'BUNDLE_DIR_NAME': 'build/static/',
         'STATS_FILE': os.path.join(BASE_DIR, 'build', 'webpack-stats.json'),
     }
+}
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+REST_FRAMEWORK = {
+    'DEFAULT_FILTER_BACKENDS': ('django_filters.rest_framework.DjangoFilterBackend',)
 }
