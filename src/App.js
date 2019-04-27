@@ -4,7 +4,7 @@ import Profile from './components/Profile';
 import './App.css';
 import {hot} from 'react-hot-loader/root';
 import {BrowserRouter as Router, Route, Redirect, Link, withRouter} from 'react-router-dom';
-import {getCurrentUser} from './utils/auth';
+import {getCurrentUser, setCurrentUser} from './utils/auth';
 import {Layout, Menu, Icon} from 'antd';
 const {Content, Sider} = Layout;
 const {Item} = Menu;
@@ -32,9 +32,9 @@ const RoutedMenu = withRouter(props => {
   )
 });
 
-const PrivateRoute = ({component: ChildComponent, ...rest}) => {
+const PrivateRoute = ({component: ChildComponent, authenticatedUser, ...rest}) => {
   return <Route {...rest} render={props => {
-    if (getCurrentUser() == null) {
+    if (authenticatedUser == null) {
       return <Redirect to='/profile' />;
     } else {
       return <ChildComponent {...props} />;
@@ -44,10 +44,24 @@ const PrivateRoute = ({component: ChildComponent, ...rest}) => {
 
 class App extends Component {
   state = {
-    collapsed: false
+    collapsed: false,
+    authenticatedUser: null
+  }
+
+  getAuthenticatedUser = () => this.setState({ authenticatedUser: getCurrentUser() });
+
+  setAuthenticatedUser = user => {
+    setCurrentUser(user);
+    this.setState({ authenticatedUser: user });
+  }
+
+  componentDidMount() {
+    this.getAuthenticatedUser()
   }
 
 	render() {
+    const {authenticatedUser} = this.state;
+
 		return (
       <Router>
     		<div className='App'>
@@ -57,10 +71,10 @@ class App extends Component {
               <RoutedMenu />
   					</Sider>
   					<Content style={{ padding: 24 }}>
-              <PrivateRoute path='/' exact={true} component={() => <div>{'test'}</div>} />
-              <PrivateRoute path='/bins' exact={true} component={() => <div>{'bins'}</div>} />
-              <PrivateRoute path='/items' exact={true} component={ItemList} />
-              <Route path='/profile' exact={true} component={Profile} />
+              <PrivateRoute authenticatedUser={authenticatedUser} path='/' exact={true} component={() => <div>{'test'}</div>} />
+              <PrivateRoute authenticatedUser={authenticatedUser} path='/bins' exact={true} component={() => <div>{'bins'}</div>} />
+              <PrivateRoute authenticatedUser={authenticatedUser} path='/items' exact={true} component={ItemList} />
+              <Route path='/profile' exact={true} component={() => <Profile authenticatedUser={authenticatedUser} setAuthenticatedUser={this.setAuthenticatedUser} />} />
   					</Content>
   				</Layout>
     		</div>

@@ -1,13 +1,28 @@
 import React, {Component} from 'react';
-import {getCurrentUser} from '../../utils/auth';
 import Login from './Login';
+import {setAuthToken} from '../../utils/auth';
+import {Button} from 'antd';
 
 class Profile extends Component {
-  render() {
-    const currentUser = getCurrentUser();
-    if (currentUser == null) return <Login />;
+  handleLogout = () => {
+    const {setAuthenticatedUser} = this.props;
 
-    return JSON.stringify(currentUser);
+    setAuthenticatedUser(null);
+    setAuthToken(null);
+  }
+
+  render() {
+    const {authenticatedUser, setAuthenticatedUser} = this.props;
+    if (authenticatedUser == null) return <Login authenticatedUser={authenticatedUser} setAuthenticatedUser={setAuthenticatedUser} />;
+
+    return (
+      <div>
+        <div>
+          {JSON.stringify(authenticatedUser)}
+        </div>
+        <Button onClick={this.handleLogout}>Logout</Button>
+      </div>
+    );
   }
 }
 

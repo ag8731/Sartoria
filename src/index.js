@@ -6,7 +6,11 @@ import * as serviceWorker from './serviceWorker';
 import {getAuthToken} from './utils/auth';
 import axios from 'axios';
 
-axios.defaults.headers.common['Authorization'] = `Token ${getAuthToken()}`;
+axios.interceptors.request.use(config => {
+  const token = getAuthToken();
+  if (token != null) config.headers.Authorization = token;
+  return config;
+});
 
 ReactDOM.render(<App />, document.getElementById('root'));
 

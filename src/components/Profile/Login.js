@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {setCurrentUser, setAuthToken} from '../../utils/auth';
+import {setAuthToken} from '../../utils/auth';
 import {Card, Input, Button, message} from 'antd';
 import axios from 'axios';
 
@@ -13,6 +13,7 @@ class Login extends Component {
 
   handleLogin = () => {
     const {username, password} = this.state;
+    const {setAuthenticatedUser} = this.props;
 
     if (username.length === 0 || password.length === 0) {
 			message.error('Username and password are both required.');
@@ -24,7 +25,7 @@ class Login extends Component {
       password
     }).then(res => {
       const {user, token} = res.data;
-      setCurrentUser(user);
+      setAuthenticatedUser(user);
       setAuthToken(token);
     }).catch(err => message.error('Invalid username or password.'));
   }
