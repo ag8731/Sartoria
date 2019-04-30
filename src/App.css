@@ -43,6 +43,7 @@
 }
 
 .item {
+    margin-bottom: 16px;
     cursor: default;
     width: 300px;
 }
@@ -58,7 +59,10 @@
     margin-top: 8px;
 }
 
-.creator-select {
+.creator-select,
+.creator-image,
+.creator-image .ant-upload-select-picture-card,
+.creator-image .ant-upload-select-picture-card img {
     width: 100%;
 }
 

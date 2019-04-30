@@ -45,6 +45,12 @@ class TagSerializer(ModelSerializer):
 
 
 class ItemSerializer(ModelSerializer):
+    class Meta:
+        model = Item
+        fields = '__all__'
+
+
+class ItemReadSerializer(ModelSerializer):
     owner = UserSerializer()
 
     class Meta:

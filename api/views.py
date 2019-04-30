@@ -2,6 +2,7 @@ from api.models import Bin, Item, Tag
 from api.serializers import (
     BinSerializer,
     CreateUserSerializer,
+    ItemReadSerializer,
     ItemSerializer,
     LoginUserSerializer,
     TagSerializer,
@@ -10,7 +11,7 @@ from api.serializers import (
 from django.contrib.auth.models import User
 from knox.models import AuthToken
 from rest_framework.generics import GenericAPIView
-from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
@@ -55,15 +56,22 @@ class BinViewSet(ModelViewSet):
     # permission_classes = [IsAuthenticated]
     queryset = Bin.objects.all()
     serializer_class = BinSerializer
+    filterset_fields = ('owner',)
 
 
 class TagViewSet(ModelViewSet):
     # permission_classes = [IsAuthenticated]
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
+    filterset_fields = ('owner',)
 
 
 class ItemViewSet(ModelViewSet):
     # permission_classes = [IsAuthenticated]
     queryset = Item.objects.all()
-    serializer_class = ItemSerializer
+    filterset_fields = ('owner',)
+
+    def get_serializer_class(self):
+        if self.request.method == 'GET':
+            return ItemReadSerializer
+        return ItemSerializer

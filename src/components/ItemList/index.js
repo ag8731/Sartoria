@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import axios from 'axios';
+import Store from '../../store';
 import {Card, Button} from 'antd';
 import Item from './Item';
 import ItemCreator from './ItemCreator';
@@ -10,9 +11,17 @@ class ItemList extends Component {
 		showItemCreator: false
 	}
 
-	getAllItems = () => axios.get('/api/items/').then(res => {
-		this.setState({ items: res.data });
-	});
+	getAllItems = () => {
+    const {store} = this.props;
+
+    axios.get('/api/items/', {
+      params: {
+        owner: store.get('user').id
+      }
+    }).then(res => {
+		  this.setState({ items: res.data });
+	  });
+  }
 
 	componentDidMount() {
 		this.getAllItems();
@@ -49,4 +58,4 @@ class ItemList extends Component {
 	}
 }
 
-export default ItemList;
+export default Store.withStore(ItemList);

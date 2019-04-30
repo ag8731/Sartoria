@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import axios from 'axios';
-import {Modal, Input, Select, Button, message} from 'antd';
+import Store from '../../store';
+import {Modal, Input, Select, Button, Upload, Icon, message} from 'antd';
 import TagCreator from './TagCreator';
 
 const {TextArea} = Input;
@@ -15,16 +16,34 @@ class ItemCreator extends Component {
     tags: [],
     allBins: [],
     allTags: [],
-    showTagCreator: false
+    showTagCreator: false,
+    loading: false,
+    imagePreview: null
 	}
 
-  getAllBins = () => axios.get('/api/bins').then(res => {
-		this.setState({ allBins: res.data });
-	});
+  getAllBins = () => {
+    const {store} = this.props;
 
-  getAllTags = () => axios.get('/api/tags').then(res => {
-		this.setState({ allTags: res.data });
-	});
+    axios.get('/api/bins', {
+      params: {
+        owner: store.get('user').id
+      }
+    }).then(res => {
+  		this.setState({ allBins: res.data });
+  	});
+  }
+
+  getAllTags = () => {
+    const {store} = this.props;
+
+    axios.get('/api/tags', {
+      params: {
+        owner: store.get('user').id
+      }
+    }).then(res => {
+  		this.setState({ allTags: res.data });
+  	});
+  }
 
   componentDidMount() {
     this.getAllBins()
@@ -39,29 +58,53 @@ class ItemCreator extends Component {
     <Option key={tag.id} value={tag.id}>{tag.name}</Option>
   ));
 
+  getBase64 = (img, cb) => {
+    const reader = new FileReader();
+    reader.addEventListener('load', () => cb(reader.result));
+    reader.readAsDataURL(img);
+  }
+
+  handleUploaderChange = info => {
+    if (info.file.status === 'uploading') {
+      this.setState({ loading: true });
+      return;
+    }
+
+    const image = info.file.originFileObj;
+    if (info.file.status === 'done') {
+      this.getBase64(image, imagePreview => this.setState({
+        imagePreview,
+        image,
+        loading: false,
+      }));
+    }
+  }
+
 	handleOk = () => {
     const {name, description, image, bin, tags} = this.state;
-    const {actions} = this.props;
+    const {actions, store} = this.props;
 
 		if (name.length === 0 || image == null || bin == null) {
-			message.error('All fields required.');
+			message.error('Name, image, and bin are required.');
 			return;
 		}
 
-		axios.post('/api/items/', {
-      owner: 2,
-			name,
-			description,
-      image,
-      bin,
-      tags
-		}).then(res => {
+    const formData = new FormData();
+    formData.append('owner', store.get('user').id);
+		formData.append('name', name);
+		formData.append('description', description);
+    formData.append('image', image);
+    formData.append('bin', bin);
+    tags.forEach(tag => formData.append('tags', tag));
+
+		axios.post('/api/items/', formData).then(res => {
 			this.setState({
         name: '',
         description: '',
         image: null,
-        bin: null,
-        tags: []
+        bin: undefined,
+        tags: [],
+        imagePreview: null
 			});
 
 			actions.getAllItems();
@@ -70,7 +113,7 @@ class ItemCreator extends Component {
 	}
 
 	render() {
-    const {name, description, image, bin, tags, showTagCreator} = this.state;
+    const {name, description, imagePreview, bin, tags, showTagCreator, loading} = this.state;
     const {visible, actions} = this.props;
 
 		return (
@@ -125,9 +168,31 @@ class ItemCreator extends Component {
             <Button icon='plus' className='creator-tag-add'>Tag</Button>
           </TagCreator>
         </div>
+        <div className='creator-field'>
+          <Upload
+            className='creator-image'
+            listType='picture-card'
+            showUploadList={false}
+            customRequest={({ file, onSuccess }) => {
+              setTimeout(() => {
+                onSuccess('ok');
+              }, 0);
+            }}
+            accept='image/*'
+            multiple={false}
+            onChange={this.handleUploaderChange}
+          >
+            {imagePreview ?
+              <img src={imagePreview} alt='' />
+            : <div>
+                <Icon type={loading ? 'loading' : 'plus'} />
+              <div className='ant-upload-text'>Upload</div>
+            </div>}
+          </Upload>
+        </div>
 			</Modal>
 		);
 	}
 }
 
-export default ItemCreator;
+export default Store.withStore(ItemCreator);

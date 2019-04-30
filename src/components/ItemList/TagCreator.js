@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import axios from 'axios';
+import Store from '../../store';
 import {Input, Popover, Button, message} from 'antd';
 
 const {TextArea} = Input;
@@ -12,7 +13,7 @@ class TagCreator extends Component {
 
 	handleConfirm = () => {
     const {name, description} = this.state;
-    const {actions} = this.props;
+    const {actions, store} = this.props;
 
 		if (name.length === 0) {
 			message.error('Tags must have names.');
@@ -20,7 +21,7 @@ class TagCreator extends Component {
 		}
 
 		axios.post('/api/tags/', {
-      owner: 2,
+      owner: store.get('user').id,
 			name,
 			description,
 		}).then(res => {
@@ -73,4 +74,4 @@ class TagCreator extends Component {
 	}
 }
 
-export default TagCreator;
+export default Store.withStore(TagCreator);
