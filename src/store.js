@@ -2,7 +2,10 @@ import {createConnectedStore} from 'undux';
 import {getCurrentUser, setCurrentUser} from './utils/auth';
 
 const initialState = {
-  user: getCurrentUser()
+  user: getCurrentUser(),
+  bins: [],
+  items: [],
+  tags: []
 };
 
 const effects = store => {

@@ -14,8 +14,6 @@ class ItemCreator extends Component {
     image: null,
     bin: undefined,
     tags: [],
-    allBins: [],
-    allTags: [],
     showTagCreator: false,
     loading: false,
     imagePreview: null
@@ -29,7 +27,7 @@ class ItemCreator extends Component {
         owner: store.get('user').id
       }
     }).then(res => {
-  		this.setState({ allBins: res.data });
+  		store.set('bins')(res.data);
   	});
   }
 
@@ -41,7 +39,7 @@ class ItemCreator extends Component {
         owner: store.get('user').id
       }
     }).then(res => {
-  		this.setState({ allTags: res.data });
+  		store.set('tags')(res.data);
   	});
   }
 
@@ -50,11 +48,11 @@ class ItemCreator extends Component {
     this.getAllTags()
   }
 
-  renderBinOptions = () => this.state.allBins.map(bin => (
+  renderBinOptions = () => this.props.store.get('bins').map(bin => (
     <Option key={bin.id} value={bin.id}>{bin.name}</Option>
   ));
 
-  renderTagOptions = () => this.state.allTags.map(tag => (
+  renderTagOptions = () => this.props.store.get('tags').map(tag => (
     <Option key={tag.id} value={tag.id}>{tag.name}</Option>
   ));
 
@@ -82,9 +80,11 @@ class ItemCreator extends Component {
 
 	handleOk = () => {
     const {name, description, image, bin, tags} = this.state;
-    const {actions, store} = this.props;
+    const {actions, store, currentBin} = this.props;
 
-		if (name.length === 0 || image == null || bin == null) {
+    const selectedBin = currentBin || bin;
+
+		if (name.length === 0 || image == null || selectedBin == null) {
 			message.error('Name, image, and bin are required.');
 			return;
 		}
@@ -94,7 +94,7 @@ class ItemCreator extends Component {
 		formData.append('name', name);
 		formData.append('description', description);
     formData.append('image', image);
-    formData.append('bin', bin);
+    formData.append('bin', selectedBin);
     tags.forEach(tag => formData.append('tags', tag));
 
 		axios.post('/api/items/', formData).then(res => {
@@ -114,7 +114,7 @@ class ItemCreator extends Component {
 
 	render() {
     const {name, description, imagePreview, bin, tags, showTagCreator, loading} = this.state;
-    const {visible, actions} = this.props;
+    const {visible, actions, currentBin} = this.props;
 
 		return (
 			<Modal
@@ -141,7 +141,8 @@ class ItemCreator extends Component {
           placeholder='Bin'
           optionFilterProp='children'
           onChange={bin => this.setState({ bin })}
-          value={bin}
+          value={currentBin || bin}
+          disabled={currentBin != null}
         >
           {this.renderBinOptions()}
         </Select>

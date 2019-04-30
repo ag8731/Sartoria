@@ -69,7 +69,7 @@ class TagViewSet(ModelViewSet):
 class ItemViewSet(ModelViewSet):
     # permission_classes = [IsAuthenticated]
     queryset = Item.objects.all()
-    filterset_fields = ('owner',)
+    filterset_fields = ('owner', 'bin')
 
     def get_serializer_class(self):
         if self.request.method == 'GET':

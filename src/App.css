@@ -35,6 +35,11 @@
     font-size: 24px;
 }
 
+.section-header .description {
+    margin-left: 16px;
+    color: rgba(0, 0, 0, 0.5);
+}
+
 .item-grid {
     display: flex;
     flex-flow: row wrap;
@@ -79,14 +84,18 @@
     float: right;
 }
 
+.ant-menu-submenu-open {
+    color: inherit !important;
+}
+
 .ant-popover-inner-content {
     overflow: auto;
 }
 
 .ant-table-footer {
-    background: #ffffff !important
+    background: #ffffff !important;
 }
 
 .ant-list-item-meta-description {
-    color: rgba(0, 0, 0, 0.65) !important
+    color: rgba(0, 0, 0, 0.65) !important;
 }

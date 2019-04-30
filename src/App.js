@@ -3,34 +3,11 @@ import ItemList from './components/ItemList';
 import Profile from './components/Profile';
 import './App.css';
 import {hot} from 'react-hot-loader/root';
-import {BrowserRouter as Router, Route, Redirect, Link, withRouter} from 'react-router-dom';
+import {BrowserRouter as Router, Route, Redirect} from 'react-router-dom';
 import Store from './store';
-import {Layout, Menu, Icon} from 'antd';
+import RoutedMenu from './components/RoutedMenu';
+import {Layout} from 'antd';
 const {Content, Sider} = Layout;
-const {Item} = Menu;
-
-const RoutedMenu = withRouter(props => {
-  const {location} = props;
-  return (
-    <Menu theme='dark' selectedKeys={[location.pathname]} mode='inline'>
-      <Item key='/bins'>
-        <Icon type='appstore-o' />
-        <span>Bins</span>
-        <Link to='/bins' />
-      </Item>
-      <Item key='/items'>
-        <Icon type='tool' />
-        <span>Items</span>
-        <Link to='/items' />
-      </Item>
-      <Item key='/profile'>
-        <Icon type='user' />
-        <span>Profile</span>
-        <Link to='/profile' />
-      </Item>
-    </Menu>
-  )
-});
 
 const PrivateRoute = ({component: ChildComponent, user, ...rest}) => {
   return <Route {...rest} render={props => {
@@ -60,8 +37,9 @@ class App extends Component {
               <RoutedMenu />
   					</Sider>
   					<Content style={{ padding: 24 }}>
-              <PrivateRoute user={user} path='/' exact={true} component={() => <div>{'test'}</div>} />
+              <PrivateRoute user={user} path='/' exact={true} component={() => <div>{'root'}</div>} />
               <PrivateRoute user={user} path='/bins' exact={true} component={() => <div>{'bins'}</div>} />
+              <PrivateRoute user={user} path='/bins/:binId' exact={true} component={ItemList} />
               <PrivateRoute user={user} path='/items' exact={true} component={ItemList} />
               <Route path='/profile' exact={true} component={Profile} />
   					</Content>

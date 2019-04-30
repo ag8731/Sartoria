@@ -5,25 +5,35 @@ const {Meta} = Card;
 
 class Item extends Component {
   renderTags = () => this.props.data.tags.map(tag => (
-    <Tag key={tag.id}>{tag.name}</Tag>
+    <Tag key={tag.id} className='sub'>{tag.name}</Tag>
   ));
 
+  renderActions = () => {
+    const {showBin} = this.props;
+
+    if (showBin) {
+      return [<Icon type='skin' />, <Icon type='dropbox' />];
+    } else {
+      return [<Icon type='skin' className='label' />]
+    }
+  }
+
   render() {
-    const {data} = this.props;
+    const {data, showBin} = this.props;
 
     return (
       <Card
         className='item'
         hoverable={true}
         cover={<img alt='' src={data.image} />}
-        actions={[<Icon type='skin' />, <Icon type='dropbox' />]}
+        actions={this.renderActions()}
       >
         <Meta
           title={<span><Icon type='skin' className='label' />{data.name}</span>}
           description={
             <div>
-              <div><Icon type='dropbox' className='label' />{data.bin.name}</div>
-              {data.tags.length !== 0 && <div className='sub'><Icon type='tags' className='label' />{this.renderTags()}</div>}
+              {showBin && <div><Icon type='dropbox' className='label' />{data.bin.name}</div>}
+              {data.tags.length !== 0 && <div><Icon type='tags' className='label' />{this.renderTags()}</div>}
             </div>
           }
         />
