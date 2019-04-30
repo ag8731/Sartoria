@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import {Link} from 'react-router-dom';
 import {Card, Icon, Tag} from 'antd';
 
 const {Meta} = Card;
@@ -9,12 +10,15 @@ class Item extends Component {
   ));
 
   renderActions = () => {
-    const {showBin} = this.props;
+    const {data, showBin} = this.props;
+
+    const GoToBin = ({id}) => (<Link to={`/bins/${id}`}><Icon type='dropbox' /></Link>);
+    const GoToItem = ({id}) => (<Link to={`/items/${id}`}><Icon type='skin' /></Link>);
 
     if (showBin) {
-      return [<Icon type='skin' />, <Icon type='dropbox' />];
+      return [<GoToItem id={data.id} />, <GoToBin id={data.bin.id}/>];
     } else {
-      return [<Icon type='skin' className='label' />]
+      return [<GoToItem id={data.id} />];
     }
   }
 
