@@ -142,7 +142,7 @@ class ItemCreator extends Component {
           optionFilterProp='children'
           onChange={bin => this.setState({ bin })}
           value={currentBin || bin}
-          disabled={currentBin != null}
+          disabled={!isNaN(currentBin) && currentBin != null}
         >
           {this.renderBinOptions()}
         </Select>

@@ -3,10 +3,15 @@ import Store from '../store';
 import {Menu, Icon} from 'antd';
 import {Link, withRouter} from 'react-router-dom';
 import axios from 'axios';
+import BinCreator from './BinCreator';
 
 const {Item, SubMenu} = Menu;
 
 class RoutedMenu extends Component {
+  state = {
+    showBinCreator: false
+  }
+
   getAllBins = () => {
     const {store} = this.props;
 
@@ -31,12 +36,16 @@ class RoutedMenu extends Component {
   ))
 
   render() {
+    const {showBinCreator} = this.state;
     const {location} = this.props;
 
     return (
       <Menu theme='dark' selectedKeys={[location.pathname]} mode='inline'>
         <SubMenu key='/bins' title={<span><Icon type='dropbox' /><span>Bins</span></span>}>
           {this.renderBinList()}
+          <Item key='NEW_BIN' onClick={() => this.setState({ showBinCreator: true })}>
+            <span><Icon type='plus'/>Bin</span>
+          </Item>
         </SubMenu>
         <Item key='/items'>
           <Icon type='skin' />
@@ -48,6 +57,13 @@ class RoutedMenu extends Component {
           <span>Profile</span>
           <Link to='/profile' />
         </Item>
+        <BinCreator
+          actions={{
+            getAllBins: this.getAllBins,
+						hideBinCreator: () => this.setState({ showBinCreator: false })
+					}}
+					visible={showBinCreator}
+        />
       </Menu>
     )
   }
