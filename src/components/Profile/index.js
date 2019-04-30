@@ -1,24 +1,26 @@
 import React, {Component} from 'react';
 import Login from './Login';
 import {setAuthToken} from '../../utils/auth';
+import Store from '../../store';
 import {Button} from 'antd';
 
 class Profile extends Component {
   handleLogout = () => {
-    const {setAuthenticatedUser} = this.props;
+    const {store} = this.props;
 
-    setAuthenticatedUser(null);
+    store.set('user')(null);
     setAuthToken(null);
   }
 
   render() {
-    const {authenticatedUser, setAuthenticatedUser} = this.props;
-    if (authenticatedUser == null) return <Login authenticatedUser={authenticatedUser} setAuthenticatedUser={setAuthenticatedUser} />;
+    const {store} = this.props;
+    const user = store.get('user');
+    if (user == null) return <Login />;
 
     return (
       <div>
         <div>
-          {JSON.stringify(authenticatedUser)}
+          {JSON.stringify(user)}
         </div>
         <Button onClick={this.handleLogout}>Logout</Button>
       </div>
@@ -26,4 +28,4 @@ class Profile extends Component {
   }
 }
 
-export default Profile;
+export default Store.withStore(Profile);

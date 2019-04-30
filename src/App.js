@@ -4,7 +4,7 @@ import Profile from './components/Profile';
 import './App.css';
 import {hot} from 'react-hot-loader/root';
 import {BrowserRouter as Router, Route, Redirect, Link, withRouter} from 'react-router-dom';
-import {getCurrentUser, setCurrentUser} from './utils/auth';
+import Store from './store';
 import {Layout, Menu, Icon} from 'antd';
 const {Content, Sider} = Layout;
 const {Item} = Menu;
@@ -32,9 +32,9 @@ const RoutedMenu = withRouter(props => {
   )
 });
 
-const PrivateRoute = ({component: ChildComponent, authenticatedUser, ...rest}) => {
+const PrivateRoute = ({component: ChildComponent, user, ...rest}) => {
   return <Route {...rest} render={props => {
-    if (authenticatedUser == null) {
+    if (user == null) {
       return <Redirect to='/profile' />;
     } else {
       return <ChildComponent {...props} />;
@@ -44,23 +44,12 @@ const PrivateRoute = ({component: ChildComponent, authenticatedUser, ...rest}) =
 
 class App extends Component {
   state = {
-    collapsed: false,
-    authenticatedUser: null
-  }
-
-  getAuthenticatedUser = () => this.setState({ authenticatedUser: getCurrentUser() });
-
-  setAuthenticatedUser = user => {
-    setCurrentUser(user);
-    this.setState({ authenticatedUser: user });
-  }
-
-  componentDidMount() {
-    this.getAuthenticatedUser()
+    collapsed: false
   }
 
 	render() {
-    const {authenticatedUser} = this.state;
+    const {store} = this.props;
+    const user = store.get('user');
 
 		return (
       <Router>
@@ -71,10 +60,10 @@ class App extends Component {
               <RoutedMenu />
   					</Sider>
   					<Content style={{ padding: 24 }}>
-              <PrivateRoute authenticatedUser={authenticatedUser} path='/' exact={true} component={() => <div>{'test'}</div>} />
-              <PrivateRoute authenticatedUser={authenticatedUser} path='/bins' exact={true} component={() => <div>{'bins'}</div>} />
-              <PrivateRoute authenticatedUser={authenticatedUser} path='/items' exact={true} component={ItemList} />
-              <Route path='/profile' exact={true} component={() => <Profile authenticatedUser={authenticatedUser} setAuthenticatedUser={this.setAuthenticatedUser} />} />
+              <PrivateRoute user={user} path='/' exact={true} component={() => <div>{'test'}</div>} />
+              <PrivateRoute user={user} path='/bins' exact={true} component={() => <div>{'bins'}</div>} />
+              <PrivateRoute user={user} path='/items' exact={true} component={ItemList} />
+              <Route path='/profile' exact={true} component={Profile} />
   					</Content>
   				</Layout>
     		</div>
@@ -83,6 +72,6 @@ class App extends Component {
 	}
 }
 
-export default process.env.NODE_ENV === "development"
+export default Store.withStore(process.env.NODE_ENV === "development"
 	? hot(App)
-	: App;
+	: App);
