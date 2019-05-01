@@ -1,8 +1,8 @@
 import React, {Component} from 'react';
 import axios from 'axios';
-import Store from '../../store';
-import {Card, Button} from 'antd';
-import Item from './Item';
+import Store from '../store';
+import {Card, Button, Empty} from 'antd';
+import ItemCard from './ItemCard';
 import ItemCreator from './ItemCreator';
 
 class ItemList extends Component {
@@ -50,9 +50,15 @@ class ItemList extends Component {
     }
   }
 
-  renderItems = () => this.props.store.get('items').map(item => (
-    <Item key={item.id} data={item} showBin={this.props.match.params.binId == null}/>
-  ));
+  renderItems = () => {
+    const items = this.props.store.get('items');
+
+    if (items.length === 0) return <Empty description='No Items' />;
+
+    return items.map(item => (
+      <ItemCard key={item.id} data={item} showBin={this.props.match.params.binId == null}/>
+    ));
+  }
 
 	render() {
     const {bin} = this.state;

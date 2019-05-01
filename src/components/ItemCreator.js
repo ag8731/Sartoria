@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import axios from 'axios';
-import Store from '../../store';
+import Store from '../store';
 import {Modal, Input, Select, Button, Upload, Icon, message} from 'antd';
 import TagCreator from './TagCreator';
 

@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import axios from 'axios';
-import Store from '../../store';
+import Store from '../store';
 import {Input, Popover, Button, message} from 'antd';
 
 const {TextArea} = Input;

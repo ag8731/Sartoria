@@ -4,7 +4,7 @@ import {Card, Icon, Tag} from 'antd';
 
 const {Meta} = Card;
 
-class Item extends Component {
+class ItemCard extends Component {
   renderTags = () => this.props.data.tags.map(tag => (
     <Tag key={tag.id} className='sub'>{tag.name}</Tag>
   ));
@@ -46,4 +46,4 @@ class Item extends Component {
   }
 }
 
-export default Item;
+export default ItemCard;

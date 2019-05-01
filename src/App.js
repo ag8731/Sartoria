@@ -6,6 +6,7 @@ import {hot} from 'react-hot-loader/root';
 import {BrowserRouter as Router, Route, Redirect} from 'react-router-dom';
 import Store from './store';
 import RoutedMenu from './components/RoutedMenu';
+import ItemView from './components/ItemView';
 import {Layout} from 'antd';
 const {Content, Sider} = Layout;
 
@@ -41,6 +42,7 @@ class App extends Component {
               <PrivateRoute user={user} path='/bins' exact={true} component={() => <div>{'bins'}</div>} />
               <PrivateRoute user={user} path='/bins/:binId' exact={true} component={ItemList} />
               <PrivateRoute user={user} path='/items' exact={true} component={ItemList} />
+              <PrivateRoute user={user} path='/items/:itemId' exact={true} component={ItemView} />
               <Route path='/profile' exact={true} component={Profile} />
   					</Content>
   				</Layout>

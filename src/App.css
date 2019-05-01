@@ -53,12 +53,12 @@
     width: 300px;
 }
 
-.item .label,
+.label,
 .creator-actions .cancel {
     margin-right: 8px;
 }
 
-.item .sub,
+.sub,
 .creator-field,
 .creator-actions {
     margin-top: 8px;
@@ -98,4 +98,13 @@
 
 .ant-list-item-meta-description {
     color: rgba(0, 0, 0, 0.65) !important;
+}
+
+.hidden-body .ant-card-body {
+    display: none;
+}
+
+.tag-grid {
+    width: 25%;
+    text-align: center;
 }
