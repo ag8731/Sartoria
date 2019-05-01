@@ -69,8 +69,17 @@ class ItemList extends Component {
           <span className='title'>{bin != null ? bin.name : 'Items'}</span>
           {(bin != null && bin.description != null) && <span className='description'>{bin.description}</span>}
           <Button.Group style={{ float: 'right' }}>
+            {bin != null && <Button
+              icon='setting'
+              onClick={console.log}
+            />}
+            <Button
+              icon='filter'
+              onClick={console.log}
+            />
             <Button
               icon='plus'
+              type='primary'
               onClick={() => this.setState({ showItemCreator: true })}
             />
           </Button.Group>

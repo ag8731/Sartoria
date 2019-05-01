@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import axios from 'axios';
 import Store from '../store';
 import {Link} from 'react-router-dom';
-import {Card, Button, Row, Col, Tag, Icon} from 'antd';
+import {Card, Button, Row, Col, Tag, Icon, Dropdown, Menu} from 'antd';
 
 class ItemView extends Component {
   state = {
@@ -39,9 +39,14 @@ class ItemView extends Component {
         <Card className='section-header'>
           <span className='title'>{item.name}</span>
           <Button.Group style={{ float: 'right' }}>
-            <Button
-              icon='plus'
-            />
+            <Dropdown overlay={
+              <Menu>
+                <Menu.Item><Icon type='edit' />Edit Item</Menu.Item>
+                <Menu.Item><Icon type='delete' />Delete Item</Menu.Item>
+              </Menu>
+            }>
+              <Button icon='setting' />
+            </Dropdown>
           </Button.Group>
         </Card>
         <Row gutter={16}>
@@ -50,23 +55,23 @@ class ItemView extends Component {
           </Col>
           <Col span={12}>
             <Card
-              title={<span><Icon type='info-circle' className='label'/>Description</span>}
-            >
-              {item.description}
-            </Card>
-            <Card
-              className='sub'
               title={<span><Icon type='dropbox' className='label'/>Bin</span>}
             >
               <Link to={`/bins/${item.bin.id}`}><Button icon='arrow-right'>{item.bin.name}</Button></Link>
             </Card>
-            <Card
+            {item.description.length > 0 && <Card
+              className='sub'
+              title={<span><Icon type='info-circle' className='label'/>Description</span>}
+            >
+              {item.description}
+            </Card>}
+            {item.tags.length > 0 && <Card
               className='sub'
               bodyStyle={{padding: '0'}}
               title={<span><Icon type='tags' className='label'/>Tags</span>}
             >
               {this.renderTags()}
-            </Card>
+            </Card>}
           </Col>
         </Row>
       </div>

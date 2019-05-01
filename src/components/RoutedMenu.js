@@ -5,7 +5,7 @@ import {Link, withRouter} from 'react-router-dom';
 import axios from 'axios';
 import BinCreator from './BinCreator';
 
-const {Item, SubMenu} = Menu;
+const {SubMenu} = Menu;
 
 class RoutedMenu extends Component {
   state = {
@@ -29,10 +29,10 @@ class RoutedMenu extends Component {
   }
 
   renderBinList = () => this.props.store.get('bins').map(bin => (
-    <Item key={`/bins/${bin.id}`}>
+    <Menu.Item key={`/bins/${bin.id}`}>
       <span>{bin.name}</span>
       <Link to={`/bins/${bin.id}`} />
-    </Item>
+    </Menu.Item>
   ))
 
   render() {
@@ -43,20 +43,20 @@ class RoutedMenu extends Component {
       <Menu theme='dark' selectedKeys={[location.pathname]} mode='inline'>
         <SubMenu key='/bins' title={<span><Icon type='dropbox' /><span>Bins</span></span>}>
           {this.renderBinList()}
-          <Item key='NEW_BIN' onClick={() => this.setState({ showBinCreator: true })}>
+          <Menu.Item onClick={() => this.setState({ showBinCreator: true })}>
             <span><Icon type='plus'/>Bin</span>
-          </Item>
+          </Menu.Item>
         </SubMenu>
-        <Item key='/items'>
+        <Menu.Item key='/items'>
           <Icon type='skin' />
           <span>Items</span>
           <Link to='/items' />
-        </Item>
-        <Item key='/profile'>
+        </Menu.Item>
+        <Menu.Item key='/profile'>
           <Icon type='user' />
           <span>Profile</span>
           <Link to='/profile' />
-        </Item>
+        </Menu.Item>
         <BinCreator
           actions={{
             getAllBins: this.getAllBins,
