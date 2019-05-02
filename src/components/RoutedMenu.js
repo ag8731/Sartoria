@@ -16,7 +16,10 @@ class RoutedMenu extends Component {
     const {store} = this.props;
     const user = store.get('user');
 
-    if (user == null) return;
+    if (user == null) {
+      store.set('bins')([]);
+      return;
+    };
 
     axios.get('/api/bins', {
       params: {
@@ -31,6 +34,16 @@ class RoutedMenu extends Component {
     this.getAllBins()
   }
 
+  componentDidUpdate(prevProps) {
+    const {store} = this.props;
+    const prevStore = prevProps.store;
+    const currentUser = store.get('user') || { id: null };
+    const prevUser = prevStore.get('user') || { id: null };
+    if (currentUser.id !== prevUser.id) {
+      this.getAllBins();
+    }
+  }
+
   renderBinList = () => this.props.store.get('bins').map(bin => (
     <Menu.Item key={`/bins/${bin.id}`}>
       <span>{bin.name}</span>
@@ -40,15 +53,17 @@ class RoutedMenu extends Component {
 
   render() {
     const {showBinCreator} = this.state;
-    const {location} = this.props;
+    const {location, store} = this.props;
 
     return (
       <Menu theme='dark' selectedKeys={[location.pathname]} mode='inline'>
         <SubMenu key='/bins' title={<span><Icon type='dropbox' /><span>Bins</span></span>}>
           {this.renderBinList()}
-          <Menu.Item onClick={() => this.setState({ showBinCreator: true })}>
+          {store.get('user') != null && <Menu.Item
+            onClick={() => this.setState({ showBinCreator: true })}
+          >
             <span><Icon type='plus'/>Bin</span>
-          </Menu.Item>
+          </Menu.Item>}
         </SubMenu>
         <Menu.Item key='/items'>
           <Icon type='skin' />
