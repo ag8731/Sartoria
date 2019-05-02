@@ -4,11 +4,13 @@ import Store from '../store';
 import ItemCreator from './ItemCreator';
 import {Link} from 'react-router-dom';
 import {Card, Button, Row, Col, Tag, Icon, Dropdown, Menu} from 'antd';
+import Deleter from './Deleter';
 
 class ItemView extends Component {
   state = {
     item: null,
-    showItemCreator: false
+    showItemCreator: false,
+    showDeleter: false
   }
 
   getItem = () => {
@@ -32,7 +34,8 @@ class ItemView extends Component {
   ));
 
   render() {
-    const {item, showItemCreator} = this.state;
+    const {item, showItemCreator, showDeleter} = this.state;
+    const {history} = this.props;
 
     if (item == null) return null;
 
@@ -50,6 +53,7 @@ class ItemView extends Component {
                   <span>Edit Item</span>
                 </Menu.Item>
                 <Menu.Item
+                  onClick={() => this.setState({ showDeleter: true })}
                 >
                   <Icon type='delete' />
                   <span>Delete Item</span>
@@ -93,6 +97,16 @@ class ItemView extends Component {
 					visible={showItemCreator}
           currentItem={item}
 				/>
+        <Deleter
+          actions={{
+            afterDelete: () => history.push('/items'),
+						hideDeleter: () => this.setState({ showDeleter: false })
+					}}
+					visible={showDeleter}
+          title='Delete Item'
+          url={`/api/items/${item.id}`}
+          prompt={<span>Are you sure you want to delete <strong>{item.name}</strong> forever? This cannot be undone.</span>}
+        />
       </div>
     );
 

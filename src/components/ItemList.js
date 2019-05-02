@@ -5,12 +5,14 @@ import BinCreator from './BinCreator';
 import {Card, Button, Empty, Dropdown, Menu, Icon} from 'antd';
 import ItemCard from './ItemCard';
 import ItemCreator from './ItemCreator';
+import Deleter from './Deleter';
 
 class ItemList extends Component {
 	state = {
     bin: null,
 		showItemCreator: false,
-    showBinCreator: false
+    showBinCreator: false,
+    showDeleter: false
 	}
 
 	getAllItems = () => {
@@ -63,7 +65,8 @@ class ItemList extends Component {
   }
 
 	render() {
-    const {bin, showBinCreator, showItemCreator} = this.state;
+    const {bin, showBinCreator, showItemCreator, showDeleter} = this.state;
+    const {history} = this.props;
 
 		return (
 			<div>
@@ -80,6 +83,7 @@ class ItemList extends Component {
                   <span>Edit Bin</span>
                 </Menu.Item>
                 <Menu.Item
+                  onClick={() => this.setState({ showDeleter: true })}
                 >
                   <Icon type='delete' />
                   <span>Delete Bin</span>
@@ -117,6 +121,16 @@ class ItemList extends Component {
 					}}
 					visible={showBinCreator}
           currentBin={bin}
+        />}
+        {bin != null && <Deleter
+          actions={{
+            afterDelete: () => history.push('/items'),
+						hideDeleter: () => this.setState({ showDeleter: false })
+					}}
+					visible={showDeleter}
+          title='Delete Bin'
+          url={`/api/bins/${bin.id}`}
+          prompt={<span>Are you sure you want to delete <strong>{bin.name}</strong> forever? This cannot be undone. All items inside this bin will also be deleted.</span>}
         />}
 			</div>
 		);
