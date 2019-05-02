@@ -11,7 +11,17 @@ class BinCreator extends Component {
     description: ''
 	}
 
-	handleOk = () => {
+  componentDidMount() {
+    const {currentBin} = this.props;
+    if (currentBin != null) {
+      this.setState({
+        name: currentBin.name,
+        description: currentBin.description
+      });
+    }
+  }
+
+	createBin = () => {
     const {name, description} = this.state;
     const {actions, store} = this.props;
 
@@ -30,10 +40,36 @@ class BinCreator extends Component {
         description: '',
 			});
 
-      actions.getAllBins();
+      actions.refreshParent();
 			actions.hideBinCreator();
 		});
 	}
+
+  patchBin = () => {
+    const {name, description} = this.state;
+    const {actions, currentBin} = this.props;
+
+		if (name.length === 0) {
+			message.error('A name is required.');
+			return;
+		}
+
+		axios.patch(`/api/bins/${currentBin.id}/`, {
+      name,
+      description
+    }).then(res => {
+      actions.refreshParent();
+			actions.hideBinCreator();
+		});
+  }
+
+  handleOk = () => {
+    if (this.props.currentBin == null) {
+      this.createBin();
+    } else {
+      this.patchBin();
+    }
+  }
 
 	render() {
     const {name, description} = this.state;

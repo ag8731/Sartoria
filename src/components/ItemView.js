@@ -1,12 +1,14 @@
 import React, {Component} from 'react';
 import axios from 'axios';
 import Store from '../store';
+import ItemCreator from './ItemCreator';
 import {Link} from 'react-router-dom';
 import {Card, Button, Row, Col, Tag, Icon, Dropdown, Menu} from 'antd';
 
 class ItemView extends Component {
   state = {
-    item: null
+    item: null,
+    showItemCreator: false
   }
 
   getItem = () => {
@@ -30,7 +32,7 @@ class ItemView extends Component {
   ));
 
   render() {
-    const {item} = this.state;
+    const {item, showItemCreator} = this.state;
 
     if (item == null) return null;
 
@@ -41,8 +43,17 @@ class ItemView extends Component {
           <Button.Group style={{ float: 'right' }}>
             <Dropdown overlay={
               <Menu>
-                <Menu.Item><Icon type='edit' />Edit Item</Menu.Item>
-                <Menu.Item><Icon type='delete' />Delete Item</Menu.Item>
+                <Menu.Item
+                  onClick={() => this.setState({ showItemCreator: true })}
+                >
+                  <Icon type='edit' />
+                  <span>Edit Item</span>
+                </Menu.Item>
+                <Menu.Item
+                >
+                  <Icon type='delete' />
+                  <span>Delete Item</span>
+                </Menu.Item>
               </Menu>
             }>
               <Button icon='setting' />
@@ -59,12 +70,6 @@ class ItemView extends Component {
             >
               <Link to={`/bins/${item.bin.id}`}><Button icon='arrow-right'>{item.bin.name}</Button></Link>
             </Card>
-            {item.description.length > 0 && <Card
-              className='sub'
-              title={<span><Icon type='info-circle' className='label'/>Description</span>}
-            >
-              {item.description}
-            </Card>}
             {item.tags.length > 0 && <Card
               className='sub'
               bodyStyle={{padding: '0'}}
@@ -72,8 +77,22 @@ class ItemView extends Component {
             >
               {this.renderTags()}
             </Card>}
+            {item.description.length > 0 && <Card
+              className='sub'
+              title={<span><Icon type='info-circle' className='label'/>Description</span>}
+            >
+              {item.description}
+            </Card>}
           </Col>
         </Row>
+        <ItemCreator
+					actions={{
+						refreshParent: this.getItem,
+						hideItemCreator: () => this.setState({ showItemCreator: false })
+					}}
+					visible={showItemCreator}
+          currentItem={item}
+				/>
       </div>
     );
 

@@ -44,8 +44,19 @@ class ItemCreator extends Component {
   }
 
   componentDidMount() {
-    this.getAllBins()
-    this.getAllTags()
+    const {currentItem} = this.props;
+    if (currentItem != null) {
+      this.setState({
+        name: currentItem.name,
+        description: currentItem.description,
+        bin: currentItem.bin.id,
+        tags: currentItem.tags.map(tag => tag.id),
+        imagePreview: currentItem.image,
+      });
+    }
+
+    this.getAllBins();
+    this.getAllTags();
   }
 
   renderBinOptions = () => this.props.store.get('bins').map(bin => (
@@ -78,7 +89,7 @@ class ItemCreator extends Component {
     }
   }
 
-	handleOk = () => {
+	createItem = () => {
     const {name, description, image, bin, tags} = this.state;
     const {actions, store, currentBin} = this.props;
 
@@ -107,18 +118,51 @@ class ItemCreator extends Component {
         imagePreview: null
 			});
 
-			actions.getAllItems();
+			actions.refreshParent();
 			actions.hideItemCreator();
 		});
 	}
 
+  patchItem = () => {
+    const {name, description, image, bin, tags} = this.state;
+    const {actions, currentItem} = this.props;
+
+    if (name.length === 0 || bin == null) {
+			message.error('Name and bin are required.');
+			return;
+		}
+
+    const formData = new FormData();
+		formData.append('name', name);
+		formData.append('description', description);
+    formData.append('bin', bin);
+    tags.forEach(tag => formData.append('tags', tag));
+
+    if (image != null) {
+      formData.append('image', image);
+    }
+
+		axios.patch(`/api/items/${currentItem.id}/`, formData).then(res => {
+			actions.refreshParent();
+			actions.hideItemCreator();
+		});
+  }
+
+  handleOk = () => {
+    if (this.props.currentItem == null) {
+      this.createItem();
+    } else {
+      this.patchItem();
+    }
+  }
+
 	render() {
     const {name, description, imagePreview, bin, tags, showTagCreator, loading} = this.state;
-    const {visible, actions, currentBin} = this.props;
+    const {visible, actions, currentBin, currentItem} = this.props;
 
 		return (
 			<Modal
-				title='Add Item'
+				title={currentItem == null ? 'Add Item': 'Edit Item'}
 				visible={visible}
 				onOk={this.handleOk}
 				onCancel={actions.hideItemCreator}
@@ -160,7 +204,7 @@ class ItemCreator extends Component {
           <TagCreator
             placement='bottom'
             actions={{
-              getAllTags: this.getAllTags,
+              refreshParent: this.getAllTags,
               hideTagCreator: () => this.setState({ showTagCreator: false })
             }}
             visible={showTagCreator}

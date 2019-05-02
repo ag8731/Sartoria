@@ -59,7 +59,7 @@ class RoutedMenu extends Component {
         </Menu.Item>
         <BinCreator
           actions={{
-            getAllBins: this.getAllBins,
+            refreshParent: this.getAllBins,
 						hideBinCreator: () => this.setState({ showBinCreator: false })
 					}}
 					visible={showBinCreator}

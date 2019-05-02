@@ -1,14 +1,16 @@
 import React, {Component} from 'react';
 import axios from 'axios';
 import Store from '../store';
-import {Card, Button, Empty} from 'antd';
+import BinCreator from './BinCreator';
+import {Card, Button, Empty, Dropdown, Menu, Icon} from 'antd';
 import ItemCard from './ItemCard';
 import ItemCreator from './ItemCreator';
 
 class ItemList extends Component {
 	state = {
     bin: null,
-		showItemCreator: false
+		showItemCreator: false,
+    showBinCreator: false
 	}
 
 	getAllItems = () => {
@@ -61,7 +63,7 @@ class ItemList extends Component {
   }
 
 	render() {
-    const {bin} = this.state;
+    const {bin, showBinCreator, showItemCreator} = this.state;
 
 		return (
 			<div>
@@ -69,10 +71,23 @@ class ItemList extends Component {
           <span className='title'>{bin != null ? bin.name : 'Items'}</span>
           {(bin != null && bin.description != null) && <span className='description'>{bin.description}</span>}
           <Button.Group style={{ float: 'right' }}>
-            {bin != null && <Button
-              icon='setting'
-              onClick={console.log}
-            />}
+            {bin != null && <Dropdown overlay={
+              <Menu>
+                <Menu.Item
+                  onClick={() => this.setState({ showBinCreator: true })}
+                >
+                  <Icon type='edit' />
+                  <span>Edit Bin</span>
+                </Menu.Item>
+                <Menu.Item
+                >
+                  <Icon type='delete' />
+                  <span>Delete Bin</span>
+                </Menu.Item>
+              </Menu>
+            }>
+              <Button icon='setting' />
+            </Dropdown>}
             <Button
               icon='filter'
               onClick={console.log}
@@ -92,9 +107,17 @@ class ItemList extends Component {
 						getAllItems: this.getAllItems,
 						hideItemCreator: () => this.setState({ showItemCreator: false })
 					}}
-					visible={this.state.showItemCreator}
+					visible={showItemCreator}
           currentBin={+this.props.match.params.binId}
 				/>
+        {bin != null && <BinCreator
+          actions={{
+            refreshParent: this.getCurrentBin,
+						hideBinCreator: () => this.setState({ showBinCreator: false })
+					}}
+					visible={showBinCreator}
+          currentBin={bin}
+        />}
 			</div>
 		);
 	}

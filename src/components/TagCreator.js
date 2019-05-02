@@ -30,7 +30,7 @@ class TagCreator extends Component {
 				description: '',
 			});
 
-			actions.getAllTags();
+			actions.refreshParent();
 			actions.hideTagCreator();
 		})
 	}
