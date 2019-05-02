@@ -14,10 +14,13 @@ class RoutedMenu extends Component {
 
   getAllBins = () => {
     const {store} = this.props;
+    const user = store.get('user');
+
+    if (user == null) return;
 
     axios.get('/api/bins', {
       params: {
-        owner: store.get('user').id
+        owner: user.id
       }
     }).then(res => {
   		store.set('bins')(res.data);

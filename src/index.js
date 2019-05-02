@@ -9,7 +9,7 @@ import axios from 'axios';
 
 axios.interceptors.request.use(config => {
   const token = getAuthToken();
-  if (token != null) config.headers.Authorization = token;
+  if (token != null) config.headers.Authorization = `Token ${token}`;
   return config;
 });
 
