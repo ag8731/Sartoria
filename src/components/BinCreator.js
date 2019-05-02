@@ -21,6 +21,20 @@ class BinCreator extends Component {
     }
   }
 
+  componentDidUpdate(prevProps) {
+    const {currentBin} = this.props;
+    const prevBin = prevProps.currentBin;
+
+    if (currentBin == null || prevBin == null) return;
+
+    if (currentBin.id !== prevBin.id) {
+      this.setState({
+        name: currentBin.name,
+        description: currentBin.description
+      });
+    }
+  }
+
 	createBin = () => {
     const {name, description} = this.state;
     const {actions, store} = this.props;
@@ -73,11 +87,11 @@ class BinCreator extends Component {
 
 	render() {
     const {name, description} = this.state;
-    const {visible, actions} = this.props;
+    const {visible, actions, currentBin} = this.props;
 
 		return (
 			<Modal
-				title='Add Bin'
+				title={currentBin == null ? 'Add Bin' : 'Edit Bin'}
 				visible={visible}
 				onOk={this.handleOk}
 				onCancel={actions.hideBinCreator}

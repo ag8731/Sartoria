@@ -104,7 +104,7 @@ class ItemList extends Component {
         </div>
         <ItemCreator
 					actions={{
-						getAllItems: this.getAllItems,
+						refreshParent: this.getAllItems,
 						hideItemCreator: () => this.setState({ showItemCreator: false })
 					}}
 					visible={showItemCreator}
