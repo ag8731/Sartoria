@@ -44,7 +44,7 @@ class ItemView extends Component {
         <Card className='section-header'>
           <span className='title'>{item.name}</span>
           <Button.Group style={{ float: 'right' }}>
-            <Dropdown overlay={
+            <Dropdown trigger={['click']} overlay={
               <Menu>
                 <Menu.Item
                   onClick={() => this.setState({ showItemCreator: true })}

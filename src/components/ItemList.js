@@ -74,7 +74,7 @@ class ItemList extends Component {
           <span className='title'>{bin != null ? bin.name : 'Items'}</span>
           {(bin != null && bin.description != null) && <span className='description'>{bin.description}</span>}
           <Button.Group style={{ float: 'right' }}>
-            {bin != null && <Dropdown overlay={
+            {bin != null && <Dropdown trigger={['click']} overlay={
               <Menu>
                 <Menu.Item
                   onClick={() => this.setState({ showBinCreator: true })}
