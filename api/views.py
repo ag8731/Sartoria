@@ -10,6 +10,8 @@ from api.serializers import (
 )
 from django.contrib.auth.models import User
 from knox.models import AuthToken
+from rest_framework.filters import SearchFilter
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.generics import GenericAPIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
@@ -69,7 +71,9 @@ class TagViewSet(ModelViewSet):
 class ItemViewSet(ModelViewSet):
     # permission_classes = [IsAuthenticated]
     queryset = Item.objects.all()
-    filterset_fields = ('owner', 'bin')
+    filter_backends = (SearchFilter, DjangoFilterBackend)
+    filterset_fields = ('owner', 'bin', 'tags')
+    search_fields = ('name',)
 
     def get_serializer_class(self):
         if self.request.method == 'GET':

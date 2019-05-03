@@ -54,18 +54,22 @@
 }
 
 .label,
-.creator-actions .cancel {
+.creator-actions .cancel,
+.search-actions .cancel {
     margin-right: 8px;
 }
 
 .sub,
 .creator-field,
-.creator-actions {
+.creator-actions,
+.search-field,
+.search-actions {
     margin-top: 8px;
 }
 
 .creator-select,
 .creator-image,
+.search-tag-select,
 .creator-image .ant-upload-select-picture-card,
 .creator-image .ant-upload-select-picture-card img {
     width: 100%;
@@ -80,7 +84,8 @@
     width: 20%;
 }
 
-.creator-actions {
+.creator-actions,
+.search-actions {
     float: right;
 }
 

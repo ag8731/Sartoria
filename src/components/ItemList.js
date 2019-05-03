@@ -6,23 +6,30 @@ import {Card, Button, Empty, Dropdown, Menu, Icon} from 'antd';
 import ItemCard from './ItemCard';
 import ItemCreator from './ItemCreator';
 import Deleter from './Deleter';
+import ItemSearch from './ItemSearch';
+import queryString from 'query-string';
 
 class ItemList extends Component {
 	state = {
     bin: null,
 		showItemCreator: false,
     showBinCreator: false,
-    showDeleter: false
+    showDeleter: false,
+    showItemSearch: false
 	}
 
 	getAllItems = () => {
-    const {store, match} = this.props;
+    const {store, match, location} = this.props;
+
+    const params = {
+        owner: store.get('user').id,
+        bin: match.params.binId,
+        ...queryString.parse(location.search)
+    };
 
     axios.get('/api/items/', {
-      params: {
-        owner: store.get('user').id,
-        bin: match.params.binId
-      }
+      params,
+      paramsSerializer: p => queryString.stringify(p)
     }).then(res => {
 		  store.set('items')(res.data);
 	  });
@@ -48,7 +55,8 @@ class ItemList extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (this.props.match.params.binId !== prevProps.match.params.binId) {
+    if ((this.props.match.params.binId !== prevProps.match.params.binId)
+        || (this.props.location.search !== prevProps.location.search)) {
       this.getAllItems();
       this.getCurrentBin();
     }
@@ -65,7 +73,7 @@ class ItemList extends Component {
   }
 
 	render() {
-    const {bin, showBinCreator, showItemCreator, showDeleter} = this.state;
+    const {bin, showBinCreator, showItemCreator, showDeleter, showItemSearch} = this.state;
     const {history} = this.props;
 
 		return (
@@ -92,10 +100,18 @@ class ItemList extends Component {
             }>
               <Button icon='setting' />
             </Dropdown>}
-            <Button
-              icon='filter'
-              onClick={console.log}
-            />
+            <ItemSearch
+              placement='bottomRight'
+              actions={{
+                hideItemSearch: () => this.setState({ showItemSearch: false })
+              }}
+              visible={showItemSearch}
+              handleVisibleChange={showItemSearch => this.setState({ showItemSearch })}
+            >
+              <Button
+                icon='filter'
+              />
+            </ItemSearch>
             <Button
               icon='plus'
               type='primary'
