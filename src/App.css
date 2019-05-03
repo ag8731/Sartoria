@@ -55,7 +55,9 @@
 
 .label,
 .creator-actions .cancel,
-.search-actions .cancel {
+.search-actions .cancel,
+.login-actions .register,
+.login-actions .cancel {
     margin-right: 8px;
 }
 
@@ -63,7 +65,9 @@
 .creator-field,
 .creator-actions,
 .search-field,
-.search-actions {
+.search-actions,
+.login-field,
+.login-actions {
     margin-top: 8px;
 }
 
@@ -85,7 +89,8 @@
 }
 
 .creator-actions,
-.search-actions {
+.search-actions,
+.login-actions {
     float: right;
 }
 
@@ -112,4 +117,12 @@
 .tag-grid {
     width: 25%;
     text-align: center;
+}
+
+.login-view {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }

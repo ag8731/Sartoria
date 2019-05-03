@@ -3,13 +3,15 @@ import {setAuthToken} from '../../utils/auth';
 import {Card, Input, Button, message} from 'antd';
 import Store from '../../store';
 import axios from 'axios';
+import Register from './Register';
 
 const {Password} = Input;
 
 class Login extends Component {
   state = {
     username: '',
-    password: ''
+    password: '',
+    isRegistering: false
   }
 
   handleLogin = () => {
@@ -32,22 +34,35 @@ class Login extends Component {
   }
 
   render() {
-    const {username, password} = this.state;
+    const {username, password, isRegistering} = this.state;
+
+    if (isRegistering) {
+      return (
+        <Register cancelRegistering={() => this.setState({ isRegistering: false })} />
+      );
+    }
 
     return (
-      <Card>
-        <Input
-          value={username}
-          onChange={e => this.setState({ username: e.target.value })}
-          placeholder='Username'
-        />
-        <Password
-          value={password}
-          onChange={e => this.setState({ password: e.target.value })}
-          placeholder='Password'
-        />
-        <Button type='primary' onClick={this.handleLogin}>Login</Button>
-      </Card>
+      <div className='login-view'>
+        <Card title='Welcome to Sartoria!' style={{ width: '50%' }}>
+          <Input
+            className='login-field'
+            value={username}
+            onChange={e => this.setState({ username: e.target.value })}
+            placeholder='Username'
+          />
+          <Password
+            className='login-field'
+            value={password}
+            onChange={e => this.setState({ password: e.target.value })}
+            placeholder='Password'
+          />
+          <div className='login-actions'>
+            <Button className='register' onClick={() => this.setState({ isRegistering: true })}>Register</Button>
+            <Button type='primary' onClick={this.handleLogin}>Login</Button>
+          </div>
+        </Card>
+      </div>
     )
   }
 }
