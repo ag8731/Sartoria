@@ -17,7 +17,7 @@ class Register extends Component {
 
   handleRegister = () => {
     const {username, password, firstName, lastName, email} = this.state;
-    const {store, history} = this.props;
+    const {store} = this.props;
 
     if (username.length === 0 || password.length === 0) {
 			message.error('All fields are required.');
