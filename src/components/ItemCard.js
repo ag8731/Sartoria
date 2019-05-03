@@ -1,12 +1,13 @@
 import React, {Component} from 'react';
 import {Link} from 'react-router-dom';
-import {Card, Icon, Tag} from 'antd';
+import {Card, Icon} from 'antd';
+import ItemTag from './ItemTag';
 
 const {Meta} = Card;
 
 class ItemCard extends Component {
   renderTags = () => this.props.data.tags.map(tag => (
-    <Tag key={tag.id} className='sub'>{tag.name}</Tag>
+    <ItemTag key={tag.id} className='sub' data={tag} />
   ));
 
   renderActions = () => {

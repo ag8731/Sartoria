@@ -3,7 +3,8 @@ import axios from 'axios';
 import Store from '../store';
 import ItemCreator from './ItemCreator';
 import {Link} from 'react-router-dom';
-import {Card, Button, Row, Col, Tag, Icon, Dropdown, Menu} from 'antd';
+import ItemTag from './ItemTag';
+import {Card, Button, Row, Col, Icon, Dropdown, Menu} from 'antd';
 import Deleter from './Deleter';
 
 class ItemView extends Component {
@@ -30,7 +31,7 @@ class ItemView extends Component {
   }
 
   renderTags = () => this.state.item.tags.map(tag => (
-    <Card.Grid key={tag.id} className='tag-grid'><Tag>{tag.name}</Tag></Card.Grid>
+    <Card.Grid key={tag.id} className='tag-grid'><ItemTag data={tag} /></Card.Grid>
   ));
 
   render() {

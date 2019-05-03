@@ -3,6 +3,7 @@ import {Popover, Input, Select, Button} from 'antd';
 import {withRouter} from 'react-router-dom';
 import Store from '../store';
 import axios from 'axios';
+import queryString from 'query-string';
 
 const {Option} = Select;
 
@@ -12,8 +13,25 @@ class ItemSearch extends Component {
     tags: []
   }
 
+  setSearchParams = () => {
+    let {search, tags} = queryString.parse(this.props.location.search);
+    if (search == null) search = '';
+    if (tags == null) tags = [];
+    else if (typeof tags === 'string') tags = [+tags];
+    else tags = tags.map(tag => +tag);
+    this.setState({ name: search, tags });
+  }
+
   componentDidMount() {
     this.getAllTags();
+    this.setSearchParams();
+  }
+
+  componentDidUpdate(prevProps) {
+    if (this.props.location.search !== prevProps.location.search) {
+      this.getAllTags();
+      this.setSearchParams();
+    }
   }
 
   getAllTags = () => {
