@@ -35,11 +35,13 @@ class ItemSearch extends Component {
   }
 
   getAllTags = () => {
-    const {store} = this.props;
+    const {store, location} = this.props;
+
+    const ownerId = queryString.parse(location.search).owner;
 
     axios.get('/api/tags', {
       params: {
-        owner: store.get('user').id
+        owner: ownerId || store.get('user').id
       }
     }).then(res => {
       store.set('tags')(res.data);
@@ -53,12 +55,16 @@ class ItemSearch extends Component {
   handleSearch = () => {
     const {name, tags} = this.state;
     const {history, location} = this.props;
+    const ownerId = queryString.parse(location.search).owner;
 
     const params = new URLSearchParams();
     if (name.length > 0) {
       params.append('search', name);
     }
     tags.forEach(tag => params.append('tags', tag));
+    if (ownerId != null) {
+      params.append('owner', ownerId);
+    }
 
     history.push({
       pathname: location.pathname,

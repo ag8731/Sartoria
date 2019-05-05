@@ -2,12 +2,13 @@ import React, {Component} from 'react';
 import axios from 'axios';
 import Store from '../store';
 import BinCreator from './BinCreator';
-import {Card, Button, Empty, Dropdown, Menu, Icon} from 'antd';
+import {Card, Button, Empty, Dropdown, Menu, Icon, Tooltip, message} from 'antd';
 import ItemCard from './ItemCard';
 import ItemCreator from './ItemCreator';
 import Deleter from './Deleter';
 import ItemSearch from './ItemSearch';
 import queryString from 'query-string';
+import {CopyToClipboard} from 'react-copy-to-clipboard';
 
 class ItemList extends Component {
 	state = {
@@ -36,13 +37,14 @@ class ItemList extends Component {
   }
 
   getCurrentBin = () => {
-    const {store, match} = this.props;
+    const {store, match, location} = this.props;
 
     if (match.params.binId == null) return;
+    const ownerId = queryString.parse(location.search).owner;
 
     axios.get(`/api/bins/${match.params.binId}`, {
       params: {
-        owner: store.get('user').id
+        owner: ownerId || store.get('user').id
       }
     }).then(res => {
       this.setState({ bin: res.data });
@@ -74,7 +76,12 @@ class ItemList extends Component {
 
 	render() {
     const {bin, showBinCreator, showItemCreator, showDeleter, showItemSearch} = this.state;
-    const {history} = this.props;
+    const {history, location, store} = this.props;
+
+    const ownerId = queryString.parse(location.search).owner;
+    const shareableLink = bin != null ?
+      `${window.location.origin}/bins/${bin.id}?owner=${bin.owner}`
+      : `${window.location.origin}/items?owner=${ownerId || store.get('user').id}`;
 
 		return (
 			<div>
@@ -82,7 +89,15 @@ class ItemList extends Component {
           <span className='title'>{bin != null ? bin.name : 'Items'}</span>
           {(bin != null && bin.description != null) && <span className='description'>{bin.description}</span>}
           <Button.Group style={{ float: 'right' }}>
-            {bin != null && <Dropdown trigger={['click']} overlay={
+            <CopyToClipboard
+              text={shareableLink}
+              onCopy={() => message.info('Copied to clipboard!')}
+            >
+              <Tooltip placement='bottomRight' title={shareableLink}>
+                <Button icon='share-alt' />
+              </Tooltip>
+            </CopyToClipboard>
+            {(bin != null && ownerId == null) && <Dropdown trigger={['click']} overlay={
               <Menu>
                 <Menu.Item
                   onClick={() => this.setState({ showBinCreator: true })}
@@ -112,11 +127,11 @@ class ItemList extends Component {
                 icon='filter'
               />
             </ItemSearch>
-            <Button
+            {ownerId == null && <Button
               icon='plus'
               type='primary'
               onClick={() => this.setState({ showItemCreator: true })}
-            />
+            />}
           </Button.Group>
         </Card>
         <div className='item-grid'>

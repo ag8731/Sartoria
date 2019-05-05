@@ -1,25 +1,66 @@
 import React, {Component} from 'react';
-import {Link} from 'react-router-dom';
-import {Card, Icon} from 'antd';
+import {Link, withRouter} from 'react-router-dom';
+import {Card, Icon, Tooltip, message} from 'antd';
 import ItemTag from './ItemTag';
+import {CopyToClipboard} from 'react-copy-to-clipboard';
+import queryString from 'query-string';
 
 const {Meta} = Card;
 
 class ItemCard extends Component {
   renderTags = () => this.props.data.tags.map(tag => (
-    <ItemTag key={tag.id} className='sub' data={tag} />
+    <ItemTag key={tag.id} tagClassName='sub' data={tag} />
   ));
 
   renderActions = () => {
-    const {data, showBin} = this.props;
+    const {data, showBin, location} = this.props;
 
-    const GoToBin = ({id}) => (<Link to={`/bins/${id}`}><Icon type='dropbox' /></Link>);
-    const GoToItem = ({id}) => (<Link to={`/items/${id}`}><Icon type='skin' /></Link>);
+    const ownerId = queryString.parse(location.search).owner;
+
+    const GoToBin = ({id}) => {
+      const searchString = queryString.stringify({ owner: ownerId });
+      return (
+        <Link
+          to={{
+            pathname:`/bins/${id}`,
+            search: searchString
+          }}
+        >
+          <Icon type='dropbox' />
+        </Link>
+      );
+    }
+
+    const GoToItem = ({id}) => {
+      const searchString = queryString.stringify({ owner: ownerId });
+      return (
+        <Link
+          to={{
+            pathname: `/items/${id}`,
+            search: searchString
+          }}
+        >
+          <Icon type='skin' />
+        </Link>
+      );
+    }
+
+    const ShareItem = ({id, owner}) => {
+      const shareableLink = `${window.location.origin}/items/${id}?owner=${owner}`;
+      return (
+        <CopyToClipboard
+          text={shareableLink}
+          onCopy={() => message.info('Copied to clipboard!')}
+        >
+          <Tooltip placement='bottom' title={shareableLink}><Icon type='share-alt' /></Tooltip>
+        </CopyToClipboard>
+      );
+    }
 
     if (showBin) {
-      return [<GoToItem id={data.id} />, <GoToBin id={data.bin.id}/>];
+      return [<GoToItem id={data.id} />, <GoToBin id={data.bin.id}/>, <ShareItem id={data.id} owner={data.owner.id} />];
     } else {
-      return [<GoToItem id={data.id} />];
+      return [<GoToItem id={data.id} />, <ShareItem id={data.id} owner={data.owner.id} />];
     }
   }
 
@@ -47,4 +88,4 @@ class ItemCard extends Component {
   }
 }
 
-export default ItemCard;
+export default withRouter(ItemCard);

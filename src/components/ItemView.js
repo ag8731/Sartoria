@@ -4,8 +4,10 @@ import Store from '../store';
 import ItemCreator from './ItemCreator';
 import {Link} from 'react-router-dom';
 import ItemTag from './ItemTag';
-import {Card, Button, Row, Col, Icon, Dropdown, Menu} from 'antd';
+import {Card, Button, Row, Col, Icon, Dropdown, Menu, Tooltip, message} from 'antd';
 import Deleter from './Deleter';
+import {CopyToClipboard} from 'react-copy-to-clipboard';
+import queryString from 'query-string';
 
 class ItemView extends Component {
   state = {
@@ -15,11 +17,13 @@ class ItemView extends Component {
   }
 
   getItem = () => {
-    const {store, match} = this.props;
+    const {store, match, location} = this.props;
+
+    const ownerId = queryString.parse(location.search).owner;
 
     axios.get(`/api/items/${match.params.itemId}`, {
       params: {
-        owner: store.get('user').id
+        owner: ownerId || store.get('user').id
       }
     }).then(res => {
       this.setState({ item: res.data });
@@ -36,16 +40,27 @@ class ItemView extends Component {
 
   render() {
     const {item, showItemCreator, showDeleter} = this.state;
-    const {history} = this.props;
+    const {history, location} = this.props;
 
     if (item == null) return null;
+
+    const shareableLink = `${window.location.origin}/items/${item.id}?owner=${item.owner.id}`;
+    const ownerId = queryString.parse(location.search).owner;
 
     return (
       <div>
         <Card className='section-header'>
           <span className='title'>{item.name}</span>
           <Button.Group style={{ float: 'right' }}>
-            <Dropdown trigger={['click']} overlay={
+            <CopyToClipboard
+              text={shareableLink}
+              onCopy={() => message.info('Copied to clipboard!')}
+            >
+              <Tooltip placement='bottomRight' title={shareableLink}>
+                <Button icon='share-alt' />
+              </Tooltip>
+            </CopyToClipboard>
+            {ownerId == null && <Dropdown trigger={['click']} overlay={
               <Menu>
                 <Menu.Item
                   onClick={() => this.setState({ showItemCreator: true })}
@@ -62,7 +77,7 @@ class ItemView extends Component {
               </Menu>
             }>
               <Button icon='setting' />
-            </Dropdown>
+            </Dropdown>}
           </Button.Group>
         </Card>
         <Row gutter={16}>
@@ -73,7 +88,14 @@ class ItemView extends Component {
             <Card
               title={<span><Icon type='dropbox' className='label'/>Bin</span>}
             >
-              <Link to={`/bins/${item.bin.id}`}><Button icon='arrow-right'>{item.bin.name}</Button></Link>
+              <Link
+                to={{
+                  pathname:`/bins/${item.bin.id}`,
+                  search: queryString.stringify({ owner: ownerId })
+                }}
+              >
+                <Button icon='arrow-right'>{item.bin.name}</Button>
+              </Link>
             </Card>
             {item.tags.length > 0 && <Card
               className='sub'
