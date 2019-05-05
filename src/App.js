@@ -34,12 +34,11 @@ class App extends Component {
     		<div className='App'>
   				<Layout style={{ minHeight: '100vh' }}>
   					<Sider collapsible collapsed={this.state.collapsed} onCollapse={(collapsed) => this.setState({ collapsed })}>
-  						<div className='App-logo'></div>
+  						<img style={{ width: '100%' }} alt='' src='http://localhost:8000/media/logo_transparent.png' />
               <RoutedMenu />
   					</Sider>
   					<Content style={{ padding: 24 }}>
-              <PrivateRoute user={user} path='/' exact={true} component={() => <div>{'root'}</div>} />
-              <PrivateRoute user={user} path='/bins' exact={true} component={() => <div>{'bins'}</div>} />
+              <Route path='/' exact={true} component={() => <Redirect to='/profile' />} />
               <PrivateRoute user={user} path='/bins/:binId' exact={true} component={ItemList} />
               <PrivateRoute user={user} path='/items' exact={true} component={ItemList} />
               <PrivateRoute user={user} path='/items/:itemId' exact={true} component={ItemView} />

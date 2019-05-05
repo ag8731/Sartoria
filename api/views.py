@@ -49,27 +49,27 @@ class UserLogin(GenericAPIView):
 
 
 class UserViewSet(ModelViewSet):
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
 
 class BinViewSet(ModelViewSet):
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
     queryset = Bin.objects.all()
     serializer_class = BinSerializer
     filterset_fields = ('owner',)
 
 
 class TagViewSet(ModelViewSet):
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
     filterset_fields = ('owner',)
 
 
 class ItemViewSet(ModelViewSet):
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
     queryset = Item.objects.all()
     filter_backends = (SearchFilter, DjangoFilterBackend)
     filterset_fields = ('owner', 'bin', 'tags')
